@@ -5,22 +5,24 @@ import { BudgetForm } from "@/components/budget-form";
 import { MemberAvatar } from "@/components/member-avatar";
 import { RemoveMemberButton } from "@/components/remove-member-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getActiveMemberId } from "@/lib/actions";
 import { money, monthLabel, monthOf, todayISO } from "@/lib/format";
 import { countExpensesByMember, getBudget, getDashboard, listMembers } from "@/lib/queries";
+import { requireMember } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Family" };
 
 export default async function FamilyPage() {
-  const members = listMembers();
+  const active = await requireMember();
   const month = monthOf(todayISO());
-  const { byMember } = getDashboard(month);
+
+  const [members, { byMember }, budget] = await Promise.all([
+    listMembers(),
+    getDashboard(month),
+    getBudget(),
+  ]);
+  const lifetimeCounts = await countExpensesByMember(members.map((m) => m.id));
   const totals = new Map(byMember.map((slice) => [slice.key, slice]));
-  const lifetimeCounts = countExpensesByMember();
-  // Match the add page, which falls back to the first member when nothing is stored.
-  const activeId = (await getActiveMemberId()) ?? members[0]?.id;
-  const budget = getBudget();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -62,13 +64,13 @@ export default async function FamilyPage() {
                 const slice = totals.get(member.id);
                 return (
                   <li key={member.id} className="flex items-center gap-3 py-3">
-                    <MemberAvatar name={member.name} active={member.id === activeId} />
+                    <MemberAvatar name={member.name} active={member.id === active.id} />
                     <div className="min-w-0 flex-1">
                       <p className="flex items-center gap-2 truncate text-sm font-medium">
                         {member.name}
-                        {member.id === activeId ? (
+                        {member.id === active.id ? (
                           <span className="rounded-full border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                            logging now
+                            signed in here
                           </span>
                         ) : null}
                       </p>

@@ -16,6 +16,7 @@ import {
 import { category } from "@/lib/categories";
 import { dayLabel, money, moneyExact, monthLabel, monthOf, todayISO } from "@/lib/format";
 import { listExpenses, listMembers, listMonths } from "@/lib/queries";
+import { requireMember } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "History" };
@@ -25,13 +26,13 @@ export default async function HistoryPage({
 }: {
   searchParams: Promise<{ month?: string; member?: string }>;
 }) {
+  await requireMember();
   const { month: monthParam, member: memberParam } = await searchParams;
-  const members = listMembers();
-  const months = listMonths();
+  const [members, months] = await Promise.all([listMembers(), listMonths()]);
   const month = monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : monthOf(todayISO());
   const memberId = members.some((m) => m.id === memberParam) ? memberParam : undefined;
 
-  const expenses = listExpenses({ month, memberId });
+  const expenses = await listExpenses({ month, memberId });
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (

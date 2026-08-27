@@ -1,0 +1,6 @@
+# Generated for the Family project. `supabase link --project-ref zopljklaqgynzqxgfnbu`
+# associates this directory with the hosted project.
+project_id = "family"
+
+[db]
+major_version = 15

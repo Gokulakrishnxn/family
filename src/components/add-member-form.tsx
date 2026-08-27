@@ -10,7 +10,14 @@ import { addMemberAction, type ActionState } from "@/lib/actions";
 
 const INITIAL: ActionState = { ok: false, message: "" };
 
-export function AddMemberForm() {
+export function AddMemberForm({
+  signIn = false,
+  submitLabel = "Add member",
+}: {
+  /** On the sign-in screen, creating a person also signs them in. */
+  signIn?: boolean;
+  submitLabel?: string;
+}) {
   const [state, formAction, pending] = useActionState(addMemberAction, INITIAL);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -25,7 +32,12 @@ export function AddMemberForm() {
   }, [state]);
 
   return (
-    <form ref={formRef} action={formAction} className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+    <form
+      ref={formRef}
+      action={formAction}
+      className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+    >
+      {signIn ? <input type="hidden" name="signIn" value="1" /> : null}
       <div className="space-y-2">
         <Label htmlFor="member-name">Name</Label>
         <Input id="member-name" name="name" placeholder="Anjali" required maxLength={40} autoComplete="off" />
@@ -36,9 +48,9 @@ export function AddMemberForm() {
         </Label>
         <Input id="member-role" name="role" placeholder="Amma" maxLength={24} autoComplete="off" />
       </div>
-      <Button type="submit" disabled={pending} className="sm:mb-0">
+      <Button type="submit" disabled={pending}>
         {pending ? <Loader2 className="size-4 animate-spin" /> : <UserPlus className="size-4" />}
-        Add member
+        {submitLabel}
       </Button>
     </form>
   );

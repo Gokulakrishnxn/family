@@ -20,6 +20,7 @@ import { Progress } from "@/components/ui/progress";
 import { category } from "@/lib/categories";
 import { money, monthLabel, monthOf, todayISO } from "@/lib/format";
 import { getBudget, getDashboard, listMembers, listMonths } from "@/lib/queries";
+import { requireMember } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Dashboard" };
@@ -29,14 +30,13 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ month?: string; member?: string }>;
 }) {
+  await requireMember();
   const { month: monthParam, member: memberParam } = await searchParams;
-  const members = listMembers();
-  const months = listMonths();
+  const [members, months] = await Promise.all([listMembers(), listMonths()]);
   const month = monthParam && /^\d{4}-\d{2}$/.test(monthParam) ? monthParam : monthOf(todayISO());
   const memberId = members.some((m) => m.id === memberParam) ? memberParam : undefined;
 
-  const data = getDashboard(month, memberId);
-  const budget = getBudget();
+  const [data, budget] = await Promise.all([getDashboard(month, memberId), getBudget()]);
   const scopeName = memberId ? members.find((m) => m.id === memberId)!.name : "the family";
 
   const categoryItems: BarItem[] = data.byCategory.map((slice) => ({
@@ -78,7 +78,7 @@ export default async function DashboardPage({
         <FilterBar months={months} members={members} month={month} memberId={memberId} />
       </header>
 
-      {data.count === 0 && data.allTimeTotal === 0 ? (
+      {!data.hasAnyExpenses ? (
         <EmptyState
           icon={Receipt}
           title="Nothing to chart yet"
