@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Family
 
-## Getting Started
+A shared household expense tracker. Everyone in the family opens the same app,
+picks their name, enters an amount and a category, and hits submit. The dashboard
+adds it all up — by category, by person, and across six months.
 
-First, run the development server:
+Black and white throughout: every colour token in the theme is zero-chroma, so
+nothing in the interface depends on hue to be understood.
+
+## Screens
+
+| Route | What it does |
+| --- | --- |
+| `/` | Add an expense: pick who spent it, enter the amount, choose a category, submit. Shows this month's total, today's spend and the latest entries alongside. |
+| `/dashboard` | Totals, daily average, entry count, last month, budget progress, spending by category, spending by member, a six-month trend, and recent expenses. Filter by month and by member. |
+| `/history` | Every entry as a table — date, category, member, note, amount — with the same filters. |
+| `/family` | Add and remove family members, and set the monthly household budget. |
+
+## Running it
 
 ```bash
+npm install
+npm run seed     # optional: six months of demo spending so the dashboard has something to show
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To let the rest of the household use it, run it on one machine on your home
+network and share that machine's LAN address (`npm run dev -- -H 0.0.0.0`, then
+`http://<that-machine-ip>:3000`), or deploy it to a host with a persistent disk.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build && npm start   # production
+```
 
-## Learn More
+## How it works
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 16** (App Router) with React Server Components. Every mutation is a
+  server action in `src/lib/actions.ts`; there is no client-side API layer.
+- **SQLite** through Node's built-in `node:sqlite` — no native modules to
+  compile. The database lives at `data/family.db` (override with
+  `FAMILY_DB_PATH`) and is gitignored, since it holds your household's spending.
+- **Money is stored as integer paise**, never floats, so totals do not drift.
+  `src/lib/format.ts` is the only place that turns paise into `₹`.
+- **Who is logging** is kept in a cookie, so each device remembers its own
+  person while everyone shares one ledger.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/            routes: add (/), dashboard, history, family
+  components/     app shell, forms, charts, and shadcn/ui primitives in ui/
+  hooks/          use-theme
+  lib/
+    db.ts         connection + schema
+    queries.ts    every read and write
+    actions.ts    server actions (validation lives here)
+    categories.ts the twelve spending categories and their icons
+    format.ts     money, dates, initials
+scripts/seed.mjs  demo data
+```
 
-## Deploy on Vercel
+## Design notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Theme.** `src/app/globals.css` defines one neutral ramp. Light is the base;
+  dark is re-stepped against a near-black surface rather than flipped. The
+  `dark` variant follows `prefers-color-scheme` by default, and a `.light` or
+  `.dark` class on `<html>` overrides it — which is why the toggle needs no
+  blocking script.
+- **Charts.** Each chart shows a single series, so bar *length* carries the whole
+  message and every bar wears the same ink; rank never changes a bar's colour.
+  Values are labelled directly, hovering gives the exact figure and share, and
+  `/history` is the table view of the same data.
+- **Icons** come from `lucide-react`, the icon library shadcn/ui is configured
+  with (`components.json` → `iconLibrary: "lucide"`).
+- **Responsive.** One column and a thumb-reachable bottom tab bar on phones; a
+  top nav and multi-column layouts from `md` up. Wide content (the history
+  table) scrolls inside its own container so the page never scrolls sideways.
