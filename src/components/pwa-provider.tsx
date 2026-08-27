@@ -83,8 +83,8 @@ export function PwaProvider() {
   if (!visible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 flex justify-center px-3 md:bottom-6">
-      <div className="page-motion pointer-events-auto flex w-full max-w-md items-start gap-3 rounded-2xl border bg-background p-3 shadow-lg">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-50 flex justify-center px-3">
+      <div className="page-motion pointer-events-auto flex w-full max-w-[430px] items-start gap-3 rounded-[20px] bg-card p-3 ring-1 ring-foreground/10 shadow-lg">
         <BrandMark className="size-10 shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">Add Family to your home screen</p>

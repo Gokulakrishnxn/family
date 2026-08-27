@@ -1,15 +1,14 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { CalendarDays, Loader2, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { addExpenseAction, type ActionState } from "@/lib/actions";
 import { CATEGORIES } from "@/lib/categories";
 import { todayISO } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { Inset } from "@/components/screen";
 
 const INITIAL: ActionState = { ok: false, message: "" };
 const QUICK_ADD = [100, 500, 1000, 2000];
@@ -24,7 +23,6 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
     if (!state.message) return;
     if (state.ok) {
       toast.success(state.message);
-      // The form is uncontrolled, so a native reset is all the clearing needed.
       formRef.current?.reset();
       amountRef.current?.focus();
     } else {
@@ -45,17 +43,16 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
   };
 
   return (
-    <form ref={formRef} action={formAction} className="space-y-6">
+    <form ref={formRef} action={formAction} className="space-y-5">
       <input type="hidden" name="memberId" value={memberId} />
       <input type="hidden" name="category" value={category} />
 
-      {/* Amount ------------------------------------------------------------ */}
-      <div className="space-y-3">
-        <Label htmlFor="amount" className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+      <div className="text-center">
+        <label htmlFor="amount" className="sr-only">
           Amount
-        </Label>
-        <div className="flex items-baseline gap-2 border-b-2 pb-2 focus-within:border-foreground">
-          <span aria-hidden="true" className="text-3xl font-semibold text-muted-foreground sm:text-4xl">
+        </label>
+        <div className="flex items-center justify-center gap-1">
+          <span aria-hidden="true" className="text-[40px] font-bold text-muted-foreground">
             ₹
           </span>
           <input
@@ -67,34 +64,36 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
             autoComplete="off"
             placeholder="0"
             aria-describedby="amount-hint"
-            className="num w-full min-w-0 bg-transparent text-3xl font-semibold tracking-tight outline-none placeholder:text-muted-foreground/40 sm:text-4xl"
+            className="num w-full min-w-0 max-w-[220px] bg-transparent text-center text-[52px] leading-none font-bold tracking-tight outline-none placeholder:text-muted-foreground/35"
           />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
           <span id="amount-hint" className="sr-only">
             Enter the amount in rupees, or use the quick-add buttons.
           </span>
           {QUICK_ADD.map((value) => (
-            <Button key={value} type="button" variant="outline" size="sm" onClick={() => bump(value)}>
+            <button
+              key={value}
+              type="button"
+              onClick={() => bump(value)}
+              className="tap h-9 rounded-full bg-card px-3.5 text-[13px] font-medium ring-1 ring-foreground/10"
+            >
               +{value.toLocaleString("en-IN")}
-            </Button>
+            </button>
           ))}
-          <Button type="button" variant="ghost" size="sm" onClick={() => setAmount("")}>
+          <button
+            type="button"
+            onClick={() => setAmount("")}
+            className="tap h-9 rounded-full px-3 text-[13px] font-medium text-muted-foreground"
+          >
             Clear
-          </Button>
+          </button>
         </div>
       </div>
 
-      {/* Category ---------------------------------------------------------- */}
-      <fieldset className="space-y-3">
-        <legend className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Category
-        </legend>
-        <div
-          role="radiogroup"
-          aria-label="Category"
-          className="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4 lg:grid-cols-6"
-        >
+      <fieldset>
+        <legend className="mb-2 px-1 text-[13px] font-medium text-muted-foreground">Category</legend>
+        <div role="radiogroup" aria-label="Category" className="grid grid-cols-4 gap-2">
           {CATEGORIES.map(({ id, label, icon: Icon }) => {
             const selected = category === id;
             return (
@@ -104,14 +103,16 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
                 role="radio"
                 aria-checked={selected}
                 onClick={() => setCategory(id)}
-                className={cn(
-                  "tap flex min-h-20 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-                  selected
-                    ? "border-foreground bg-foreground text-background"
-                    : "hover:bg-muted active:bg-muted",
-                )}
+                className="tap flex flex-col items-center gap-1.5 py-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                <Icon className="size-5" aria-hidden="true" />
+                <span
+                  className={cn(
+                    "flex size-12 items-center justify-center rounded-2xl",
+                    selected ? "bg-foreground text-background" : "bg-card ring-1 ring-foreground/10",
+                  )}
+                >
+                  <Icon className="size-5" aria-hidden="true" />
+                </span>
                 <span className="text-[11px] leading-tight font-medium">{label}</span>
               </button>
             );
@@ -119,39 +120,40 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
         </div>
       </fieldset>
 
-      {/* Note + date ------------------------------------------------------- */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto]">
-        <div className="space-y-2">
-          <Label htmlFor="note">Note <span className="text-muted-foreground">(optional)</span></Label>
-          <Input id="note" name="note" maxLength={120} placeholder="Weekly vegetables" autoComplete="off" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="spentAt" className="flex items-center gap-1.5">
-            <CalendarDays className="size-3.5" aria-hidden="true" />
-            Date
-          </Label>
-          <Input
+      <Inset>
+        <label className="flex items-center gap-3 px-4">
+          <span className="w-16 shrink-0 text-[15px] text-muted-foreground">Note</span>
+          <input
+            id="note"
+            name="note"
+            maxLength={120}
+            placeholder="Weekly vegetables"
+            autoComplete="off"
+            className="h-12 min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-muted-foreground/50"
+          />
+        </label>
+        <div className="mx-4 h-px bg-foreground/8" />
+        <label className="flex items-center gap-3 px-4">
+          <span className="w-16 shrink-0 text-[15px] text-muted-foreground">Date</span>
+          <input
             id="spentAt"
             name="spentAt"
             type="date"
             defaultValue={todayISO()}
             max={todayISO()}
-            className="num"
+            className="num h-12 min-w-0 flex-1 bg-transparent text-[15px] outline-none"
           />
-        </div>
-      </div>
+        </label>
+      </Inset>
 
-      <Button type="submit" size="lg" disabled={pending} className="h-12 w-full text-base">
+      <Button type="submit" disabled={pending} className="h-14 w-full rounded-2xl text-[16px] font-semibold">
         {pending ? (
           <>
             <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             Adding…
           </>
         ) : (
-          <>
-            <Plus className="size-4" aria-hidden="true" />
-            Add expense as {memberName}
-          </>
+          `Add expense · ${memberName}`
         )}
       </Button>
     </form>

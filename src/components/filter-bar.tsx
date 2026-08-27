@@ -2,21 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-import { CalendarRange, Users } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { monthLabel } from "@/lib/format";
 import type { Member } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
 const EVERYONE = "everyone";
 
-/** One row of filters above the charts, as a dashboard should have. */
 export function FilterBar({
   months,
   members,
@@ -41,36 +32,61 @@ export function FilterBar({
   };
 
   return (
-    <div className={cn("flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center", pending && "opacity-70")}>
-      <Select value={month} onValueChange={(v) => push("month", v)}>
-        <SelectTrigger className="h-11 w-full sm:h-8 sm:w-[150px]" aria-label="Month">
-          <CalendarRange className="size-4 opacity-70" aria-hidden="true" />
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent position="popper">
-          {months.map((m) => (
-            <SelectItem key={m} value={m}>
+    <div className={cn("space-y-2", pending && "opacity-70")}>
+      <div className="chip-row" role="tablist" aria-label="Month">
+        {months.map((m) => {
+          const selected = m === month;
+          return (
+            <button
+              key={m}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => push("month", m)}
+              className={cn(
+                "tap h-9 shrink-0 rounded-full px-3.5 text-[13px] font-medium",
+                selected ? "bg-foreground text-background" : "bg-card text-foreground ring-1 ring-foreground/10",
+              )}
+            >
               {monthLabel(m, { long: true })}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            </button>
+          );
+        })}
+      </div>
 
       {members.length > 0 ? (
-        <Select value={memberId ?? EVERYONE} onValueChange={(v) => push("member", v)}>
-          <SelectTrigger className="h-11 w-full sm:h-8 sm:w-[160px]" aria-label="Family member">
-            <Users className="size-4 opacity-70" aria-hidden="true" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectItem value={EVERYONE}>Everyone</SelectItem>
-            {members.map((m) => (
-              <SelectItem key={m.id} value={m.id}>
+        <div className="chip-row" role="tablist" aria-label="Family member">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!memberId}
+            onClick={() => push("member", EVERYONE)}
+            className={cn(
+              "tap h-9 shrink-0 rounded-full px-3.5 text-[13px] font-medium",
+              !memberId ? "bg-foreground text-background" : "bg-card text-foreground ring-1 ring-foreground/10",
+            )}
+          >
+            Everyone
+          </button>
+          {members.map((m) => {
+            const selected = m.id === memberId;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => push("member", m.id)}
+                className={cn(
+                  "tap h-9 shrink-0 rounded-full px-3.5 text-[13px] font-medium",
+                  selected ? "bg-foreground text-background" : "bg-card text-foreground ring-1 ring-foreground/10",
+                )}
+              >
                 {m.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              </button>
+            );
+          })}
+        </div>
       ) : null}
     </div>
   );

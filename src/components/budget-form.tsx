@@ -4,8 +4,6 @@ import { useActionState, useEffect } from "react";
 import { Loader2, Target } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { setBudgetAction, type ActionState } from "@/lib/actions";
 
 const INITIAL: ActionState = { ok: false, message: "" };
@@ -20,20 +18,17 @@ export function BudgetForm({ budget }: { budget: number }) {
   }, [state]);
 
   return (
-    <form action={formAction} className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-      <div className="space-y-2">
-        <Label htmlFor="budget">Monthly budget (₹)</Label>
-        <Input
-          id="budget"
-          name="budget"
-          inputMode="decimal"
-          placeholder="50000"
-          defaultValue={budget > 0 ? String(budget / 100) : ""}
-          className="num"
-          autoComplete="off"
-        />
-      </div>
-      <Button type="submit" variant="outline" disabled={pending} className="h-11 w-full sm:h-8 sm:w-auto">
+    <form action={formAction} className="space-y-3">
+      <input
+        id="budget"
+        name="budget"
+        inputMode="decimal"
+        placeholder="50000"
+        defaultValue={budget > 0 ? String(budget / 100) : ""}
+        autoComplete="off"
+        className="num h-12 w-full rounded-2xl bg-muted px-4 text-[15px] outline-none placeholder:text-muted-foreground/60"
+      />
+      <Button type="submit" variant="outline" disabled={pending} className="h-12 w-full rounded-2xl text-[15px] font-semibold">
         {pending ? <Loader2 className="size-4 animate-spin" /> : <Target className="size-4" />}
         Save budget
       </Button>

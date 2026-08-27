@@ -12,10 +12,10 @@ export function MemberAvatar({
   active?: boolean;
 }) {
   return (
-    <Avatar className={cn("size-9 rounded-xl border", active && "ring-2 ring-foreground", className)}>
+    <Avatar className={cn("size-9 rounded-full", active && "ring-2 ring-foreground", className)}>
       <AvatarFallback
         className={cn(
-          "rounded-xl text-xs font-semibold",
+          "rounded-full text-xs font-semibold",
           active ? "bg-foreground text-background" : "bg-muted text-foreground",
         )}
       >

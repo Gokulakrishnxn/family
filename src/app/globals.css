@@ -146,7 +146,7 @@
 --------------------------------------------------------------------------- */
 
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(0.955 0 0);
   --foreground: oklch(0.12 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.12 0 0);
@@ -187,7 +187,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: oklch(0.06 0 0);
+    --background: oklch(0.09 0 0);
     --foreground: oklch(0.98 0 0);
     --card: oklch(0.13 0 0);
     --card-foreground: oklch(0.98 0 0);
@@ -227,7 +227,7 @@
 }
 
 :root.dark {
-  --background: oklch(0.06 0 0);
+  --background: oklch(0.09 0 0);
   --foreground: oklch(0.98 0 0);
   --card: oklch(0.13 0 0);
   --card-foreground: oklch(0.98 0 0);
@@ -297,6 +297,45 @@
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
+}
+
+.app-stage {
+  min-height: 100dvh;
+  background: var(--background);
+}
+
+@media (min-width: 768px) {
+  .app-stage {
+    display: flex;
+    justify-content: center;
+    background: color-mix(in oklch, var(--foreground) 6%, var(--background));
+  }
+}
+
+.app-frame {
+  width: 100%;
+  min-height: 100dvh;
+  background: var(--background);
+}
+
+@media (min-width: 768px) {
+  .app-frame {
+    max-width: 430px;
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 8%), 0 24px 80px oklch(0 0 0 / 12%);
+  }
+}
+
+.chip-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.125rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chip-row::-webkit-scrollbar {
+  display: none;
 }
 
 @utility contain-item {
