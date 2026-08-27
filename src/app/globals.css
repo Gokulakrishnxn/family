@@ -282,10 +282,13 @@
   }
   html {
     -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     /* Keeps the layout from shifting when a dialog locks scrolling. */
     scrollbar-gutter: stable;
+    overflow-x: clip;
   }
   /* Every number in this app is compared against another number. */
   .num {

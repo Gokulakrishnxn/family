@@ -65,9 +65,9 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+      <header className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
             <LayoutDashboard className="size-5" aria-hidden="true" />
             Dashboard
           </h1>

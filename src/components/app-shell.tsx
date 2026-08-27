@@ -31,8 +31,14 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
     return (
       <TooltipProvider delayDuration={120}>
         <div className="relative min-h-dvh">
-          <div className="absolute top-3 right-3 z-10">
-            <ThemeToggle />
+          <div
+            className="absolute z-10"
+            style={{
+              top: "max(0.75rem, env(safe-area-inset-top))",
+              right: "max(0.75rem, env(safe-area-inset-right))",
+            }}
+          >
+            <ThemeToggle className="size-11 md:size-8" />
           </div>
           {children}
         </div>
@@ -42,10 +48,13 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
 
   return (
     <TooltipProvider delayDuration={120}>
-      <div className="flex min-h-dvh flex-col">
-        <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-          <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
-            <Link href="/" className="rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+      <div className="flex min-h-dvh flex-col overflow-x-clip">
+        <header
+          className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:gap-3 sm:px-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
+            <Link href="/" className="min-w-0 rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
               <BrandWordmark />
             </Link>
 
@@ -69,29 +78,31 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
               ))}
             </nav>
 
-            <div className="ml-auto flex items-center gap-1">
+            <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
               {member ? (
                 <Link
                   href="/login"
                   title="Switch person"
-                  className="flex items-center gap-2 rounded-full border py-1 pr-3 pl-1 text-sm font-medium transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+                  className="flex min-h-11 items-center gap-2 rounded-full border py-1 pr-2 pl-1 text-sm font-medium transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none sm:min-h-0 sm:pr-3"
                 >
                   <MemberAvatar name={member.name} className="size-7" />
                   <span className="hidden max-w-28 truncate sm:inline">{member.name}</span>
                 </Link>
               ) : null}
-              <ThemeToggle />
-              {member ? <SignOutButton /> : null}
+              <ThemeToggle className="size-11 md:size-8" />
+              {member ? <SignOutButton className="size-11 md:size-8" /> : null}
             </div>
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-5 pb-28 sm:px-6 md:pb-12">{children}</main>
+        <main className="mx-auto w-full max-w-6xl flex-1 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-5 pb-28 sm:px-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] md:pb-12">
+          {children}
+        </main>
 
         {/* Thumb-reachable navigation for phones. */}
         <nav
           aria-label="Main"
-          className="fixed inset-x-0 bottom-0 z-40 w-full min-w-0 overflow-x-hidden border-t bg-background/95 backdrop-blur md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 w-full min-w-0 overflow-x-hidden border-t bg-background/95 px-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] backdrop-blur md:hidden"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
           <ul className="mx-auto grid w-full max-w-md grid-cols-4">

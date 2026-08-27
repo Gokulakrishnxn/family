@@ -15,10 +15,10 @@ export default async function LoginPage() {
   const firstRun = members.length === 0;
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col justify-center px-4 py-12 sm:px-6">
+    <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col justify-center px-[max(1rem,env(safe-area-inset-left))] py-12 pr-[max(1rem,env(safe-area-inset-right))] pb-[max(3rem,env(safe-area-inset-bottom))] sm:px-6">
       <BrandWordmark className="mb-8" />
 
-      <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h1 className="text-xl font-semibold tracking-tight sm:text-3xl">
         {firstRun ? "Set up your family" : "Who's using this device?"}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">

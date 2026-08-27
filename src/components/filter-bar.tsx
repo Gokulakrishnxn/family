@@ -41,13 +41,13 @@ export function FilterBar({
   };
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", pending && "opacity-70")}>
+    <div className={cn("flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center", pending && "opacity-70")}>
       <Select value={month} onValueChange={(v) => push("month", v)}>
-        <SelectTrigger className="w-[150px]" aria-label="Month">
+        <SelectTrigger className="h-11 w-full sm:h-8 sm:w-[150px]" aria-label="Month">
           <CalendarRange className="size-4 opacity-70" aria-hidden="true" />
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent position="popper">
           {months.map((m) => (
             <SelectItem key={m} value={m}>
               {monthLabel(m, { long: true })}
@@ -58,11 +58,11 @@ export function FilterBar({
 
       {members.length > 0 ? (
         <Select value={memberId ?? EVERYONE} onValueChange={(v) => push("member", v)}>
-          <SelectTrigger className="w-[160px]" aria-label="Family member">
+          <SelectTrigger className="h-11 w-full sm:h-8 sm:w-[160px]" aria-label="Family member">
             <Users className="size-4 opacity-70" aria-hidden="true" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent position="popper">
             <SelectItem value={EVERYONE}>Everyone</SelectItem>
             {members.map((m) => (
               <SelectItem key={m.id} value={m.id}>

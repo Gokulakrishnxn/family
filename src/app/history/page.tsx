@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ReceiptText } from "lucide-react";
 import { DeleteExpenseButton } from "@/components/delete-expense-button";
 import { EmptyState } from "@/components/empty-state";
+import { ExpenseList } from "@/components/expense-list";
 import { FilterBar } from "@/components/filter-bar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,9 +38,9 @@ export default async function HistoryPage({
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+      <header className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
             <ReceiptText className="size-5" aria-hidden="true" />
             History
           </h1>
@@ -67,8 +68,11 @@ export default async function HistoryPage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* The table scrolls inside itself so the page never scrolls sideways. */}
-            <div className="-mx-2 overflow-x-auto px-2">
+            <div className="md:hidden">
+              <ExpenseList expenses={expenses} />
+            </div>
+            {/* Wide columns stay on tablet and up; phones get the list above. */}
+            <div className="-mx-2 hidden overflow-x-auto px-2 md:block">
               <Table className="min-w-[560px]">
                 <TableHeader>
                   <TableRow>

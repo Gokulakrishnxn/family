@@ -27,7 +27,7 @@ export default async function FamilyPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+        <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
           <Users className="size-5" aria-hidden="true" />
           Family
         </h1>
@@ -66,11 +66,11 @@ export default async function FamilyPage() {
                   <li key={member.id} className="flex items-center gap-3 py-3">
                     <MemberAvatar name={member.name} active={member.id === active.id} />
                     <div className="min-w-0 flex-1">
-                      <p className="flex items-center gap-2 truncate text-sm font-medium">
-                        {member.name}
+                      <p className="flex items-center gap-2 text-sm font-medium">
+                        <span className="truncate">{member.name}</span>
                         {member.id === active.id ? (
-                          <span className="rounded-full border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                            signed in here
+                          <span className="shrink-0 rounded-full border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                            you
                           </span>
                         ) : null}
                       </p>

@@ -31,7 +31,7 @@ export function RemoveMemberButton({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon-sm" aria-label={`Remove ${name}`}>
+        <Button variant="ghost" size="icon-sm" className="size-11 md:size-7" aria-label={`Remove ${name}`}>
           <Trash2 className="size-3.5" />
         </Button>
       </DialogTrigger>

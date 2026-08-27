@@ -93,7 +93,7 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
         <div
           role="radiogroup"
           aria-label="Category"
-          className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6"
+          className="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4 lg:grid-cols-6"
         >
           {CATEGORIES.map(({ id, label, icon: Icon }) => {
             const selected = category === id;

@@ -33,7 +33,7 @@ export function BudgetForm({ budget }: { budget: number }) {
           autoComplete="off"
         />
       </div>
-      <Button type="submit" variant="outline" disabled={pending}>
+      <Button type="submit" variant="outline" disabled={pending} className="h-11 w-full sm:h-8 sm:w-auto">
         {pending ? <Loader2 className="size-4 animate-spin" /> : <Target className="size-4" />}
         Save budget
       </Button>

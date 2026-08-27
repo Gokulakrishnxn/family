@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/components/app-shell";
+import { PwaProvider } from "@/components/pwa-provider";
 import { SetupNotice } from "@/components/setup-notice";
 import { Toaster } from "@/components/ui/sonner";
 import { getActiveMember } from "@/lib/session";
@@ -18,12 +19,34 @@ export const metadata: Metadata = {
   description:
     "A shared household expense tracker. Everyone in the family logs what they spend; the dashboard adds it up.",
   applicationName: "Family",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Family",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f0f0f" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 };
 
@@ -39,7 +62,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         ) : (
           <SetupNotice status={status} />
         )}
-        <Toaster position="top-center" />
+        <PwaProvider />
+        <Toaster position="top-center" offset="max(12px, env(safe-area-inset-top))" />
       </body>
     </html>
   );

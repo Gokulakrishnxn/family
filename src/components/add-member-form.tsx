@@ -48,7 +48,7 @@ export function AddMemberForm({
         </Label>
         <Input id="member-role" name="role" placeholder="Amma" maxLength={24} autoComplete="off" />
       </div>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending} className="h-11 w-full sm:h-8 sm:w-auto">
         {pending ? <Loader2 className="size-4 animate-spin" /> : <UserPlus className="size-4" />}
         {submitLabel}
       </Button>

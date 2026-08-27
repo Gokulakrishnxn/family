@@ -22,7 +22,7 @@ export default async function AddExpensePage() {
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-semibold tracking-tight">Add an expense</h1>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">Add an expense</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Logging as <span className="font-medium text-foreground">{member.name}</span> ·{" "}
             {monthLabel(month, { long: true })} ·{" "}
