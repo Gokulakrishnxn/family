@@ -284,11 +284,13 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    touch-action: manipulation;
   }
   body {
     /* Keeps the layout from shifting when a dialog locks scrolling. */
     scrollbar-gutter: stable;
     overflow-x: clip;
+    overscroll-behavior-y: none;
   }
   /* Every number in this app is compared against another number. */
   .num {
@@ -297,9 +299,100 @@
   }
 }
 
+@utility contain-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 56px;
+}
+
 @utility hairline-grid {
   background-image:
     linear-gradient(to right, var(--surface-grid) 1px, transparent 1px),
     linear-gradient(to bottom, var(--surface-grid) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+/* Motion that can hold a 120 Hz display: transform and opacity only. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-fast: 140ms;
+  --motion-page: 180ms;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: page-out var(--motion-page) var(--ease-out) both;
+}
+
+::view-transition-new(root) {
+  animation: page-in var(--motion-page) var(--ease-out) both;
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+@keyframes pulse-opacity {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.page-motion {
+  animation: page-in var(--motion-page) var(--ease-out) both;
+}
+
+.motion-tab {
+  will-change: transform;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.tap {
+  transition: transform 90ms var(--ease-out);
+}
+
+.tap:active {
+  transform: scale(0.97);
+}
+
+.skeleton {
+  animation: pulse-opacity 1.2s var(--ease-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-motion,
+  .skeleton,
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  .motion-tab,
+  .tap {
+    transition: none;
+  }
+
+  .tap:active {
+    transform: none;
+  }
+
+  @view-transition {
+    navigation: none;
+  }
 }

@@ -17,7 +17,7 @@ export function ExpenseList({ expenses }: { expenses: Expense[] }) {
       {expenses.map((expense) => {
         const { label, icon: Icon } = category(expense.category);
         return (
-          <li key={expense.id} className="flex items-center gap-3 py-3">
+          <li key={expense.id} className="contain-item flex items-center gap-3 py-3">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border bg-muted">
               <Icon className="size-4" aria-hidden="true" />
             </span>

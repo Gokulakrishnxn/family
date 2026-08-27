@@ -47,8 +47,10 @@ export function BarList({ items, emptyLabel = "Nothing here yet." }: { items: Ba
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                     <div
-                      className="h-full rounded-full bg-foreground transition-[width] duration-500 group-hover:opacity-80"
-                      style={{ width: `${Math.max((item.total / max) * 100, item.total > 0 ? 2 : 0)}%` }}
+                      className="h-full w-full origin-left rounded-full bg-foreground transition-transform duration-300 ease-out group-hover:opacity-80"
+                      style={{
+                        transform: `scaleX(${Math.max(item.total / max, item.total > 0 ? 0.02 : 0)})`,
+                      }}
                     />
                   </div>
                 </div>

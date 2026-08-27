@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, PlusCircle, ReceiptText, Users } from "lucide-react";
 import { BrandWordmark } from "@/components/brand";
 import { MemberAvatar } from "@/components/member-avatar";
+import { PageMotion } from "@/components/page-motion";
 import { SignOutButton } from "@/components/sign-out-button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +26,10 @@ export type ShellMember = { id: string; name: string; role: string };
 
 export function AppShell({ children, member }: { children: React.ReactNode; member: ShellMember | null }) {
   const pathname = usePathname();
+  const activeIndex = Math.max(
+    0,
+    NAV.findIndex(({ href }) => isActive(pathname, href)),
+  );
 
   // Signing in has no navigation and no identity to show yet.
   if (pathname === "/login") {
@@ -40,7 +45,7 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
           >
             <ThemeToggle className="size-11 md:size-8" />
           </div>
-          {children}
+          <PageMotion>{children}</PageMotion>
         </div>
       </TooltipProvider>
     );
@@ -50,7 +55,7 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
     <TooltipProvider delayDuration={120}>
       <div className="flex min-h-dvh flex-col overflow-x-clip">
         <header
-          className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70"
+          className="sticky top-0 z-40 isolate border-b bg-background transform-gpu"
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
           <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:gap-3 sm:px-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]">
@@ -96,32 +101,40 @@ export function AppShell({ children, member }: { children: React.ReactNode; memb
         </header>
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-5 pb-28 sm:px-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] md:pb-12">
-          {children}
+          <PageMotion>{children}</PageMotion>
         </main>
 
         {/* Thumb-reachable navigation for phones. */}
         <nav
           aria-label="Main"
-          className="fixed inset-x-0 bottom-0 z-40 w-full min-w-0 overflow-x-hidden border-t bg-background/95 px-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] backdrop-blur md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 isolate w-full min-w-0 overflow-x-hidden border-t bg-background px-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] transform-gpu md:hidden"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
-          <ul className="mx-auto grid w-full max-w-md grid-cols-4">
+          <ul className="relative mx-auto grid w-full max-w-md grid-cols-4">
+            <li
+              aria-hidden
+              className="motion-tab pointer-events-none absolute top-[5px] left-0 flex w-1/4 justify-center"
+              style={{ transform: `translate3d(${activeIndex * 100}%, 0, 0)` }}
+            >
+              <span className="h-7 w-12 rounded-full bg-foreground" />
+            </li>
             {NAV.map(({ href, label, icon: Icon }) => {
               const active = isActive(pathname, href);
               return (
                 <li key={href} className="min-w-0">
                   <Link
                     href={href}
+                    prefetch
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
+                      "tap flex min-h-14 flex-col items-center justify-center gap-1 text-[11px] font-medium",
                       active ? "text-foreground" : "text-muted-foreground",
                     )}
                   >
                     <span
                       className={cn(
-                        "flex h-7 w-12 items-center justify-center rounded-full transition-colors",
-                        active && "bg-foreground text-background",
+                        "relative z-10 flex h-7 w-12 items-center justify-center rounded-full",
+                        active && "text-background",
                       )}
                     >
                       <Icon className="size-4" />

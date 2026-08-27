@@ -22,7 +22,7 @@ export function MemberPicker({ members, activeId }: { members: Member[]; activeI
               disabled={pending}
               onClick={() => startTransition(() => signInAction(member.id))}
               className={cn(
-                "relative flex w-full min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-5 text-center transition-colors outline-none",
+                "tap relative flex w-full min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-5 text-center outline-none",
                 "hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60",
                 active && "border-foreground bg-muted",
               )}

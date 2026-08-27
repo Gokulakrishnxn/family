@@ -105,7 +105,7 @@ export function ExpenseForm({ memberId, memberName }: { memberId: string; member
                 aria-checked={selected}
                 onClick={() => setCategory(id)}
                 className={cn(
-                  "flex min-h-20 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                  "tap flex min-h-20 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                   selected
                     ? "border-foreground bg-foreground text-background"
                     : "hover:bg-muted active:bg-muted",
